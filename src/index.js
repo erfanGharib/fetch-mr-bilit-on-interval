@@ -1,5 +1,6 @@
 const axios = require("axios");
 const { exec } = require("child_process");
+const { requestBody } = require("./configs.js");
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
@@ -19,23 +20,19 @@ const headers = {
     Referer: "https://mrbilit.com/",
 };
 
-const body = {
-    from: 87330000,
-    to: 11320000,
-    date: "2026-08-15",
-    includeClosed: true,
-    includePromotions: true,
-    loadFromDbOnUnavailability: true,
-    includeUnderDevelopment: true,
-};
-
 let lastBuses = [];
 
 function getDate(bus) {
     return {
-        from: new Date(bus?.departureTime)?.getHours() + ":" + new Date(bus?.departureTime)?.getMinutes(),
-        to: new Date(bus?.arrivalTime)?.getHours() + ":" + new Date(bus?.arrivalTime)?.getMinutes()
-    }
+        from:
+            new Date(bus?.departureTime)?.getHours() +
+            ":" +
+            new Date(bus?.departureTime)?.getMinutes(),
+        to:
+            new Date(bus?.arrivalTime)?.getHours() +
+            ":" +
+            new Date(bus?.arrivalTime)?.getMinutes(),
+    };
 }
 
 function diffBuses(oldList, newList) {
@@ -85,7 +82,7 @@ function diffBuses(oldList, newList) {
 
 async function fetchData() {
     try {
-        const res = await axios.post(url, body, { headers });
+        const res = await axios.post(url, requestBody, { headers });
         const buses = res.data.buses || [];
 
         if (lastBuses.length > 0) {
